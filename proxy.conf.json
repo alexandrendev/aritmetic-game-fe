@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://aritmetic.shardweb.app",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

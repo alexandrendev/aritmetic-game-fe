@@ -1,0 +1,27 @@
+<main class="dashboard-page">
+  <section class="dashboard-card">
+    <p class="tag">Math Quest</p>
+    <h1>{{ greeting() }}</h1>
+
+    @if (loading()) {
+      <p class="subtitle">Carregando seu perfil...</p>
+    } @else {
+      <p class="subtitle">
+        Seu acesso esta ativo. Na proxima etapa vamos criar os desafios e o ranking da turma.
+      </p>
+
+      <div class="stats" aria-label="Informacoes do aluno">
+        <article>
+          <h2>Nome</h2>
+          <p>{{ displayName() }}</p>
+        </article>
+        <article>
+          <h2>Email</h2>
+          <p>{{ user()?.email }}</p>
+        </article>
+      </div>
+    }
+
+    <button type="button" (click)="logout()">Sair</button>
+  </section>
+</main>
