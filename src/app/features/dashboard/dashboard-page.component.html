@@ -7,7 +7,7 @@
       <p class="subtitle">Carregando seu perfil...</p>
     } @else {
       <p class="subtitle">
-        Seu acesso esta ativo. Na proxima etapa vamos criar os desafios e o ranking da turma.
+        Bem-vindo ao Math Quest! Crie uma sala ou entre em uma existente para começar a jogar.
       </p>
 
       <div class="stats" aria-label="Informacoes do aluno">
@@ -20,8 +20,17 @@
           <p>{{ user()?.email }}</p>
         </article>
       </div>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" (click)="createGame()">
+          ➕ Criar Nova Sala
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="joinGame()">
+          🎮 Entrar em Sala
+        </button>
+      </div>
     }
 
-    <button type="button" (click)="logout()">Sair</button>
+    <button type="button" (click)="logout()" class="btn btn-logout">Sair</button>
   </section>
 </main>

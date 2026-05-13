@@ -4,6 +4,11 @@ import { guestGuard } from './core/auth/guest.guard';
 import { DashboardPageComponent } from './features/dashboard/dashboard-page.component';
 import { LoginPageComponent } from './features/auth/login-page.component';
 import { RegisterPageComponent } from './features/auth/register-page.component';
+import { CreateGameComponent } from './features/game-session/create-game.component';
+import { JoinGameComponent } from './features/game-session/join-game.component';
+import { GuestProfileComponent } from './features/game-session/guest-profile.component';
+import { LobbyComponent } from './features/game-session/lobby.component';
+import { GameBoardComponent } from './features/game-session/game-board.component';
 
 export const routes: Routes = [
 	{
@@ -20,6 +25,27 @@ export const routes: Routes = [
 		path: 'dashboard',
 		component: DashboardPageComponent,
 		canActivate: [authGuard]
+	},
+	{
+		path: 'create-game',
+		component: CreateGameComponent,
+		canActivate: [authGuard]
+	},
+	{
+		path: 'join-game',
+		component: JoinGameComponent
+	},
+	{
+		path: 'guest-profile',
+		component: GuestProfileComponent
+	},
+	{
+		path: 'lobby/:id',
+		component: LobbyComponent
+	},
+	{
+		path: 'game/:id',
+		component: GameBoardComponent
 	},
 	{
 		path: '',
