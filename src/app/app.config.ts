@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     {
       provide: API_BASE_URL,
-      useValue: 'http://localhost:3000'
+      useValue: 'https://qflow.dev.br'
     }
   ]
 };

@@ -2,7 +2,7 @@ export type Difficulty = 'easy' | 'medium' | 'hard' | string;
 
 export interface CreateGameSessionPayload {
   name: string;
-  difficult: Difficulty;
+  difficulty: Difficulty;
 }
 
 export interface StartGameSessionPayload {
@@ -26,7 +26,7 @@ export interface GameSession {
   name?: string;
   code?: string;
   status?: string;
-  difficult?: Difficulty;
+  difficulty?: Difficulty;
   [key: string]: unknown;
 }
 

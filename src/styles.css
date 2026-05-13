@@ -18,14 +18,29 @@ body {
 body {
 	font-family: 'Fredoka', 'Segoe UI', sans-serif;
 	background:
-		radial-gradient(circle at 10% 15%, rgba(255, 225, 111, 0.38), transparent 25%),
-		radial-gradient(circle at 90% 85%, rgba(129, 226, 178, 0.3), transparent 20%),
-		linear-gradient(180deg, #f5fbff 0%, #edf7ff 45%, #f3fffa 100%);
-	color: #1b3f4d;
+		radial-gradient(circle at 12% 10%, rgba(167, 139, 250, 0.28) 0%, transparent 38%),
+		radial-gradient(circle at 88% 12%, rgba(249, 115, 22, 0.18) 0%, transparent 32%),
+		radial-gradient(circle at 78% 88%, rgba(236, 72, 153, 0.20) 0%, transparent 35%),
+		radial-gradient(circle at 8%  80%, rgba(16, 185, 129, 0.16) 0%, transparent 30%),
+		#F5F3FF;
+	color: #1E1B4B;
 }
 
-h1,
-h2,
-h3 {
+h1, h2, h3 {
 	font-family: 'Baloo 2', 'Trebuchet MS', sans-serif;
+}
+
+@keyframes float {
+	0%, 100% { transform: translateY(0)    rotate(0deg);  }
+	33%       { transform: translateY(-18px) rotate(7deg);  }
+	66%       { transform: translateY(9px)  rotate(-5deg); }
+}
+
+.deco-symbol {
+	position: absolute;
+	font-family: 'Baloo 2', sans-serif;
+	font-weight: 800;
+	pointer-events: none;
+	user-select: none;
+	animation: float 7s ease-in-out infinite;
 }

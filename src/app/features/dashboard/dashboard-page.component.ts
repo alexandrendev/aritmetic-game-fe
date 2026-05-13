@@ -33,11 +33,7 @@ export class DashboardPageComponent {
   }
 
   createGame(): void {
-    this.router.navigate(['/create-game']);
-  }
-
-  joinGame(): void {
-    this.router.navigate(['/join-game']);
+    void this.router.navigate(['/create-game']);
   }
 
   logout(): void {

@@ -29,7 +29,11 @@ export class AuthService {
 
   login(payload: LoginPayload): Observable<AuthUser | null> {
     return this.http
-      .post<AuthApiResponse>(`${this.apiBaseUrl}/api/login`, payload, {
+      .post<AuthApiResponse>(`${this.apiBaseUrl}/api/login`,
+        {
+          identifier: payload.email,
+          password: payload.password
+        }, {
         headers: this.jsonHeaders
       })
       .pipe(

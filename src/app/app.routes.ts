@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { guestGuard } from './core/auth/guest.guard';
+import { HomePageComponent } from './features/home/home-page.component';
 import { DashboardPageComponent } from './features/dashboard/dashboard-page.component';
 import { LoginPageComponent } from './features/auth/login-page.component';
 import { RegisterPageComponent } from './features/auth/register-page.component';
@@ -11,6 +12,11 @@ import { LobbyComponent } from './features/game-session/lobby.component';
 import { GameBoardComponent } from './features/game-session/game-board.component';
 
 export const routes: Routes = [
+	{
+		path: '',
+		pathMatch: 'full',
+		component: HomePageComponent
+	},
 	{
 		path: 'login',
 		component: LoginPageComponent,
@@ -33,7 +39,8 @@ export const routes: Routes = [
 	},
 	{
 		path: 'join-game',
-		component: JoinGameComponent
+		component: JoinGameComponent,
+		canActivate: [authGuard]
 	},
 	{
 		path: 'guest-profile',
@@ -48,12 +55,7 @@ export const routes: Routes = [
 		component: GameBoardComponent
 	},
 	{
-		path: '',
-		pathMatch: 'full',
-		redirectTo: 'login'
-	},
-	{
 		path: '**',
-		redirectTo: 'login'
+		redirectTo: ''
 	}
 ];

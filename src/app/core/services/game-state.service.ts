@@ -20,7 +20,13 @@ export class GameStateService {
   /**
    * Conecta no canal privado da sessão e mapeia os eventos para os Signals
    */
-  public connectToSession(sessionId: number) {
+  public connectToSession(sessionId: number, resetState = true) {
+    if (resetState) {
+      this.session.set(null);
+      this.participants.set([]);
+      this.isGameOver.set(false);
+    }
+
     const channel = this.pusherService.subscribeToChannel(`private-game-session-${sessionId}`);
 
     // Jogo Iniciado
@@ -29,6 +35,9 @@ export class GameStateService {
       this.round.set(data.round);
       this.currentQuestion.set(data.question);
       this.isGameOver.set(false);
+      if (Array.isArray(data.participants)) {
+        this.participants.set(data.participants);
+      }
     });
 
     // Nova Rodada e Nova Questão
@@ -46,8 +55,11 @@ export class GameStateService {
 
     // Rodada Finalizada (Timeout ou todos responderam)
     channel.bind('game.round.finished', (data: any) => {
-      // Limpa a questão atual para mostrar um placar parcial ou aguardar a próxima
-      this.currentQuestion.set(null); 
+      this.currentQuestion.set(null);
+      const summary = data.roundSummary;
+      if (summary?.participants && Array.isArray(summary.participants)) {
+        summary.participants.forEach((p: any) => this.upsertParticipant(p));
+      }
     });
 
     // Fim de Jogo
