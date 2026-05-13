@@ -1,27 +1,29 @@
 <main class="dashboard-page">
   <section class="dashboard-card">
-    <p class="tag">Math Quest</p>
-    <h1>{{ greeting() }}</h1>
+
+    <header class="dash-header">
+      <p class="tag">⚡ O Jogo</p>
+      <h1>{{ greeting() }}</h1>
+      <p class="subtitle">Crie uma sala, compartilhe o código e seus alunos entram na hora.</p>
+    </header>
 
     @if (loading()) {
-      <p class="subtitle">Carregando seu perfil...</p>
+      <p class="loading-text">Carregando perfil...</p>
     } @else {
-      <p class="subtitle">
-        Seu acesso esta ativo. Na proxima etapa vamos criar os desafios e o ranking da turma.
-      </p>
-
-      <div class="stats" aria-label="Informacoes do aluno">
-        <article>
-          <h2>Nome</h2>
-          <p>{{ displayName() }}</p>
-        </article>
-        <article>
-          <h2>Email</h2>
-          <p>{{ user()?.email }}</p>
-        </article>
+      <div class="profile-row">
+        <div class="profile-avatar">{{ displayName().charAt(0).toUpperCase() }}</div>
+        <div class="profile-info">
+          <p class="profile-name">{{ displayName() }}</p>
+          <p class="profile-email">{{ user()?.email }}</p>
+        </div>
       </div>
+
+      <button type="button" class="btn btn-create" (click)="createGame()">
+        ➕ Criar Nova Sala
+      </button>
     }
 
-    <button type="button" (click)="logout()">Sair</button>
+    <button type="button" class="btn btn-logout" (click)="logout()">Sair da conta</button>
+
   </section>
 </main>

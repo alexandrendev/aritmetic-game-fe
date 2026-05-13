@@ -32,6 +32,10 @@ export class DashboardPageComponent {
       });
   }
 
+  createGame(): void {
+    void this.router.navigate(['/create-game']);
+  }
+
   logout(): void {
     this.authService.logout();
     void this.router.navigate(['/login']);

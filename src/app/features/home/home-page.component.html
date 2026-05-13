@@ -1,0 +1,82 @@
+<div class="relative min-h-dvh overflow-hidden bg-gradient-to-br from-violet-950 via-purple-800 to-fuchsia-700 flex flex-col items-center justify-center px-4 py-10 gap-8">
+
+  <!-- Floating math decorations -->
+  <div aria-hidden="true">
+    <span class="deco-symbol text-yellow-300/25 text-[5rem]"  style="top:5%;   left:3%;   animation-delay:0s">+</span>
+    <span class="deco-symbol text-pink-300/20   text-[7rem]"  style="top:10%;  right:5%;  animation-delay:1.3s">×</span>
+    <span class="deco-symbol text-yellow-200/20 text-[4rem]"  style="top:42%;  left:1%;   animation-delay:2.6s">÷</span>
+    <span class="deco-symbol text-fuchsia-300/20 text-[6rem]" style="top:48%;  right:2%;  animation-delay:0.9s">−</span>
+    <span class="deco-symbol text-yellow-300/20 text-[5rem]"  style="bottom:18%; left:6%;  animation-delay:2s">?</span>
+    <span class="deco-symbol text-pink-200/20   text-[4.5rem]" style="bottom:8%;  right:7%;  animation-delay:3.2s">=</span>
+    <span class="deco-symbol text-violet-300/20 text-[3rem]"  style="top:22%;  left:16%;  animation-delay:0.5s">²</span>
+    <span class="deco-symbol text-yellow-200/15 text-[3.5rem]" style="top:32%; right:14%; animation-delay:1.8s">√</span>
+  </div>
+
+  <!-- Logo badge -->
+  <header class="flex flex-col items-center gap-3 text-center z-10">
+    <span class="bg-yellow-300 text-violet-950 font-black text-sm uppercase tracking-widest px-5 py-1.5 rounded-full shadow-lg">
+      ⚡ O Jogo
+    </span>
+    <h1 class="text-white text-5xl font-black leading-tight drop-shadow-lg mt-1">
+      Pronto para jogar?
+    </h1>
+    <p class="text-violet-200 text-lg font-medium">
+      Responda desafios de matemática e vença seus amigos!
+    </p>
+  </header>
+
+  <!-- Main card: guest entry -->
+  <main class="z-10 w-full max-w-md bg-white rounded-[32px] shadow-2xl px-8 py-8 flex flex-col items-center gap-4">
+    <span class="text-5xl">🎮</span>
+    <h2 class="text-violet-900 text-2xl font-black text-center m-0">Entrar em uma Sala</h2>
+    <p class="text-purple-600 text-center text-base m-0">
+      Recebeu um código? Entre agora sem precisar de conta!
+    </p>
+
+    <form (ngSubmit)="joinRoom()" class="w-full flex flex-col gap-3 mt-1">
+      <input
+        type="text"
+        [(ngModel)]="roomCode"
+        name="code"
+        placeholder="Ex: ABC123"
+        maxlength="10"
+        autocomplete="off"
+        (input)="roomCode = roomCode.toUpperCase()"
+        aria-label="Código da sala"
+        class="w-full border-2 border-purple-200 rounded-2xl px-5 py-4 text-center text-2xl font-black tracking-[0.25em] text-violet-900 placeholder:text-purple-200 placeholder:tracking-normal placeholder:text-xl placeholder:font-medium focus:outline-none focus:border-purple-500 transition-colors"
+      />
+
+      <button
+        type="submit"
+        [disabled]="loading()"
+        class="w-full bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black text-xl rounded-2xl py-4 shadow-lg shadow-orange-400/40 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer border-0"
+      >
+        {{ loading() ? 'Entrando...' : '🚀 Entrar na Sala' }}
+      </button>
+    </form>
+
+    @if (error()) {
+      <p class="text-red-500 font-semibold text-sm text-center m-0" role="alert">{{ error() }}</p>
+    }
+  </main>
+
+  <!-- Auth links -->
+  <footer class="z-10 flex flex-col items-center gap-3">
+    <p class="text-violet-300 text-sm font-medium m-0">Sou professor ou já tenho conta</p>
+    <div class="flex gap-3">
+      <a
+        routerLink="/login"
+        class="px-6 py-2.5 rounded-2xl border-2 border-white/40 text-white font-bold text-sm hover:bg-white/10 transition-colors no-underline"
+      >
+        Fazer Login
+      </a>
+      <a
+        routerLink="/register"
+        class="px-6 py-2.5 rounded-2xl bg-yellow-300 text-violet-950 font-bold text-sm hover:bg-yellow-200 transition-colors no-underline shadow-md shadow-yellow-400/30"
+      >
+        Criar Conta
+      </a>
+    </div>
+  </footer>
+
+</div>

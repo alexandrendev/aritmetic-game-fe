@@ -1,20 +1,10 @@
 <main class="auth-page">
-  <section class="math-panel" aria-label="Boas-vindas">
-    <p class="tag">Math Quest</p>
-    <h1>Entre para jogar e aprender</h1>
-    <p class="subtitle">
-      Pronto para resolver desafios de adicao, subtracao, multiplicacao e divisao?
-    </p>
+  <section class="auth-card" aria-label="Formulario de login">
 
-    <div class="equation-card" aria-hidden="true">
-      <p>3 x 7 = 21</p>
-      <p>64 - 29 = 35</p>
-      <p>9 + 8 + 2 = 19</p>
-    </div>
-  </section>
-
-  <section class="form-card" aria-label="Formulario de login">
-    <h2>Login</h2>
+    <header class="auth-header">
+      <span class="tag">⚡ O Jogo</span>
+      <h1>Entrar na conta</h1>
+    </header>
 
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <label for="email">Email</label>
@@ -58,17 +48,14 @@
       }
 
       <button type="submit" [disabled]="loading()">
-        @if (loading()) {
-          Entrando...
-        } @else {
-          Entrar
-        }
+        @if (loading()) { Entrando... } @else { Entrar }
       </button>
     </form>
 
-    <p class="helper">
-      Ainda nao tem conta?
-      <a routerLink="/register">Criar conta</a>
-    </p>
+    <footer class="auth-footer">
+      <p class="helper">Ainda nao tem conta? <a routerLink="/register">Criar conta</a></p>
+      <p class="helper"><a routerLink="/">← Voltar ao inicio</a></p>
+    </footer>
+
   </section>
 </main>
