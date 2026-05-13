@@ -111,14 +111,15 @@ import { AuthService } from '../../core/auth/auth.service';
                     class="option-btn"
                     (click)="submitAnswer(option)"
                     [disabled]="answered()"
-                    [class.answered]="answered()">
+                    [class.option-selected]="selectedAnswer() === option"
+                    [class.option-dimmed]="answered() && selectedAnswer() !== option">
                     {{ option }}
                   </button>
                 }
               </div>
 
               @if (answered()) {
-                <p class="answered-msg">✅ Resposta enviada! Aguardando os outros...</p>
+                <p class="answered-msg">⏳ Aguardando os outros jogadores...</p>
               }
             </div>
 
@@ -387,13 +388,23 @@ import { AuthService } from '../../core/auth/auth.service';
       box-shadow: 0 10px 24px rgba(124, 58, 237, 0.4);
     }
 
-    .option-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
-    .option-btn.answered { opacity: 0.6; }
+    .option-btn:disabled { cursor: not-allowed; transform: none; }
+
+    .option-btn.option-selected {
+      outline: 3px solid #fff;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 6px rgba(167, 139, 250, 0.5), 0 6px 18px rgba(124, 58, 237, 0.3);
+    }
+
+    .option-btn.option-dimmed {
+      opacity: 0.35;
+      filter: brightness(0.6);
+    }
 
     .answered-msg {
       margin: 0;
       font-weight: 600;
-      color: #059669;
+      color: #6D28D9;
       font-size: 0.95rem;
     }
 
@@ -569,7 +580,8 @@ export class GameBoardComponent implements OnInit, OnDestroy {
   public sessionId = 0;
   public sessionGuestId = 0;
 
-  public answered = signal(false);
+  public selectedAnswer = signal<number | null>(null);
+  public answered = computed(() => this.selectedAnswer() !== null);
   private questionStartTime = 0;
 
   public currentPlayer = computed(() =>
@@ -586,7 +598,7 @@ export class GameBoardComponent implements OnInit, OnDestroy {
       const q = this.gameState.currentQuestion();
       if (q) {
         this.questionStartTime = Date.now();
-        this.answered.set(false);
+        this.selectedAnswer.set(null);
       }
     });
   }
@@ -604,11 +616,11 @@ export class GameBoardComponent implements OnInit, OnDestroy {
 
   submitAnswer(answer: number) {
     if (this.answered()) return;
-    this.answered.set(true);
+    this.selectedAnswer.set(answer);
     const timeMs = Date.now() - this.questionStartTime;
 
     this.gameService.submitAnswer(this.sessionId, this.sessionGuestId, answer, timeMs)
-      .subscribe({ error: () => this.answered.set(false) });
+      .subscribe({ error: () => this.selectedAnswer.set(null) });
   }
 
   finishGame() {

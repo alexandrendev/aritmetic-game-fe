@@ -5,6 +5,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
 import { GameService } from '../../core/services/game.service';
 import { AuthService } from '../../core/auth/auth.service';
+import { environment } from '../../../environments/environment';
+import QRCode from 'qrcode';
 
 @Component({
   selector: 'app-lobby',
@@ -30,7 +32,10 @@ import { AuthService } from '../../core/auth/auth.service';
             <section class="code-section" aria-label="Código da sala">
               <p class="code-label">Código para os alunos entrarem</p>
               <div class="room-code">{{ sessionData()?.code }}</div>
-              <p class="code-hint">Compartilhe este código com os participantes</p>
+              <p class="code-hint">Compartilhe o código ou escaneie o QR code</p>
+              @if (qrCodeUrl()) {
+                <img [src]="qrCodeUrl()!" class="qr-img" alt="QR Code para entrar na sala" />
+              }
             </section>
 
             <!-- Game config -->
@@ -227,6 +232,14 @@ import { AuthService } from '../../core/auth/auth.service';
       color: #8B5CF6;
     }
 
+    .qr-img {
+      display: block;
+      margin: 1rem auto 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+    }
+
     /* Config */
     .section-title {
       margin: 0 0 0.75rem;
@@ -391,6 +404,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   loading = signal(false);
   loadError = signal<string | null>(null);
   error = signal<string | null>(null);
+  qrCodeUrl = signal<string | null>(null);
 
   totalRounds = 5;
   responseWindowMs = 30000;
@@ -402,6 +416,15 @@ export class LobbyComponent implements OnInit, OnDestroy {
       const started = this.gameState.session();
       if (started && !this.isHost() && this.sessionId) {
         void this.router.navigate(['/game', this.sessionId]);
+      }
+    });
+
+    effect(() => {
+      const code = this.sessionData()?.code;
+      if (code) {
+        const joinUrl = `${environment.appUrl}/join-game/${code}`;
+        QRCode.toDataURL(joinUrl, { width: 180, margin: 2, color: { dark: '#4C1D95', light: '#F5F3FF' } })
+          .then(url => this.qrCodeUrl.set(url));
       }
     });
   }
