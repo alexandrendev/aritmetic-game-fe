@@ -1,20 +1,20 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { GameService } from '../../core/services/game.service';
 
 @Component({
   selector: 'app-create-game',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="page-wrap">
       <div class="card">
 
         <header class="card-header">
-          <a routerLink="/dashboard" class="back-link" (click)="goBack()">← Dashboard</a>
-          <span class="tag">⚡ O Jogo · Host</span>
+          <a routerLink="/dashboard" class="back-link" (click)="goBack()"><i class="fas fa-arrow-left"></i> Dashboard</a>
+          <span class="tag"><i class="fas fa-bolt"></i> O Jogo · Host</span>
           <h1>Criar Nova Sala</h1>
           <p class="subtitle">Configure a sala e compartilhe o código com seus alunos</p>
         </header>
@@ -44,7 +44,7 @@ import { GameService } from '../../core/services/game.service';
                   [class.selected]="difficulty === opt.value"
                   (click)="difficulty = opt.value"
                 >
-                  <span class="diff-icon">{{ opt.icon }}</span>
+                  <span class="diff-icon" [innerHTML]="opt.icon"></span>
                   <span class="diff-label">{{ opt.label }}</span>
                   <span class="diff-desc">{{ opt.desc }}</span>
                 </button>
@@ -57,7 +57,8 @@ import { GameService } from '../../core/services/game.service';
           }
 
           <button type="submit" class="btn-primary" [disabled]="loading() || !sessionName.trim()">
-            {{ loading() ? 'Criando sala...' : '🚀 Criar Sala' }}
+            <i class="fas fa-rocket" *ngIf="!loading()" style="margin-right: 0.5rem"></i>
+            {{ loading() ? 'Criando sala...' : 'Criar Sala' }}
           </button>
 
         </form>
@@ -244,9 +245,9 @@ export class CreateGameComponent {
   error = signal<string | null>(null);
 
   readonly difficultyOptions = [
-    { value: 'easy',   icon: '🟢', label: 'Fácil',  desc: 'Tabuada 1–10'  },
-    { value: 'medium', icon: '🟡', label: 'Médio',  desc: 'Tabuada 11–20' },
-    { value: 'hard',   icon: '🔴', label: 'Difícil', desc: 'Tabuada 21–30' },
+    { value: 'easy',   icon: '<i class="fas fa-lightbulb" style="color: #10b981"></i>', label: 'Fácil',  desc: 'Tabuada 1–10'  },
+    { value: 'medium', icon: '<i class="fas fa-bolt" style="color: #f59e0b"></i>', label: 'Médio',  desc: 'Tabuada 11–20' },
+    { value: 'hard',   icon: '<i class="fas fa-fire" style="color: #ef4444"></i>', label: 'Difícil', desc: 'Tabuada 21–30' },
   ];
 
   goBack() {

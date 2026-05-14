@@ -10,7 +10,7 @@ import { GameService } from '../../core/services/game.service';
   imports: [CommonModule, FormsModule],
   template: `
     <div class="join-game-container">
-      <h1>🎮 Entrar em uma Sala</h1>
+      <h1><i class="fas fa-gamepad"></i> Entrar em uma Sala</h1>
       
       <form (ngSubmit)="onSubmit()">
         <div class="form-group">
@@ -44,7 +44,7 @@ import { GameService } from '../../core/services/game.service';
       <div class="divider">ou</div>
 
       <button (click)="goBack()" class="btn-secondary">
-        ← Voltar
+        <i class="fas fa-arrow-left"></i> Voltar
       </button>
     </div>
   `,

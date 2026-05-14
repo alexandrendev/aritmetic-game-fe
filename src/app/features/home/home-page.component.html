@@ -14,8 +14,8 @@
 
   <!-- Logo badge -->
   <header class="flex flex-col items-center gap-3 text-center z-10">
-    <span class="bg-yellow-300 text-violet-950 font-black text-sm uppercase tracking-widest px-5 py-1.5 rounded-full shadow-lg">
-      ⚡ O Jogo
+    <span class="bg-yellow-300 text-violet-950 font-black text-sm uppercase tracking-widest px-5 py-1.5 rounded-full shadow-lg flex items-center gap-2">
+      <i class="fas fa-bolt"></i> O Jogo
     </span>
     <h1 class="text-white text-5xl font-black leading-tight drop-shadow-lg mt-1">
       Pronto para jogar?
@@ -27,7 +27,7 @@
 
   <!-- Main card: guest entry -->
   <main class="z-10 w-full max-w-md bg-white rounded-[32px] shadow-2xl px-8 py-8 flex flex-col items-center gap-4">
-    <span class="text-5xl">🎮</span>
+    <span class="text-5xl"><i class="fas fa-gamepad text-purple-600" style="font-size: 3rem"></i></span>
     <h2 class="text-violet-900 text-2xl font-black text-center m-0">Entrar em uma Sala</h2>
     <p class="text-purple-600 text-center text-base m-0">
       Recebeu um código? Entre agora sem precisar de conta!
@@ -51,7 +51,8 @@
         [disabled]="loading()"
         class="w-full bg-gradient-to-r from-orange-500 to-orange-400 hover:from-orange-600 hover:to-orange-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-black text-xl rounded-2xl py-4 shadow-lg shadow-orange-400/40 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 transition-all cursor-pointer border-0"
       >
-        {{ loading() ? 'Entrando...' : '🚀 Entrar na Sala' }}
+        <i class="fas fa-arrow-right" *ngIf="!loading()" style="margin-right: 0.5rem"></i>
+        {{ loading() ? 'Entrando...' : 'Entrar na Sala' }}
       </button>
     </form>
 

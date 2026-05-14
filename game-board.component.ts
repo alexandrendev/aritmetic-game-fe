@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { GameStateService } from '../../core/services/game-state.service';
-import { GameService } from '../../core/services/game.service';
+import { GameStateService } from './src/app/core/services/game-state.service';
+import { GameService } from './src/app/core/services/game.service';
 
 @Component({
   selector: 'app-game-board',
@@ -14,8 +14,8 @@ import { GameService } from '../../core/services/game.service';
       <!-- HUD do Jogador (Status) -->
       @if (currentPlayer(); as player) {
         <div class="flex justify-between items-center bg-gray-100 p-4 rounded-lg shadow-sm border border-gray-200">
-          <div class="text-lg font-bold text-gray-700">👤 {{ player.nickname }}</div>
-          <div class="text-lg font-bold text-red-500">Vidas: {{ player.lives }} ❤️</div>
+          <div class="text-lg font-bold text-gray-700"><i class="fas fa-user" style="margin-right: 0.5rem"></i>{{ player.nickname }}</div>
+          <div class="text-lg font-bold text-red-500">Vidas: {{ player.lives }} <i class="fas fa-heart" style="color: #ef4444; margin-left: 0.5rem"></i></div>
           <div class="text-lg font-bold text-green-600">Score: {{ player.score }} pts</div>
         </div>
       }
