@@ -17,7 +17,7 @@ import { AuthService } from '../../core/auth/auth.service';
         <div class="board-card host-board">
 
           <header class="board-header">
-            <span class="tag">⚡ O Jogo · Host</span>
+            <span class="tag"><i class="fas fa-bolt"></i> O Jogo · Host</span>
             <div class="round-badge">
               Rodada <strong>{{ gameState.round() }}</strong>
               @if (totalRounds()) { <span class="of">de {{ totalRounds() }}</span> }
@@ -28,11 +28,11 @@ import { AuthService } from '../../core/auth/auth.service';
 
             <!-- ── RANKING FINAL ── -->
             <section class="section">
-              <h2 class="section-title">🏆 Resultado Final</h2>
+              <h2 class="section-title"><i class="fas fa-trophy" style="color: #f59e0b; margin-right: 0.5rem"></i>Resultado Final</h2>
               <ng-container *ngTemplateOutlet="podiumTpl; context: { $implicit: gameState.ranking(), isGuest: false }"></ng-container>
             </section>
 
-            <button class="btn btn-leave" (click)="backToDashboard()">← Voltar ao Dashboard</button>
+            <button class="btn btn-leave" (click)="backToDashboard()"><i class="fas fa-arrow-left" style="margin-right: 0.5rem"></i>Voltar ao Dashboard</button>
 
           } @else {
 
@@ -45,7 +45,7 @@ import { AuthService } from '../../core/auth/auth.service';
               </section>
             } @else {
               <section class="section waiting-section">
-                <p class="waiting-text">⏳ Aguardando próxima rodada...</p>
+                <p class="waiting-text"><i class="fas fa-hourglass" style="margin-right: 0.5rem"></i>Aguardando próxima rodada...</p>
               </section>
             }
 
@@ -59,14 +59,14 @@ import { AuthService } from '../../core/auth/auth.service';
                 @for (p of gameState.participants(); track p.id) {
                   <div class="participant-row" [class.eliminated]="!p.isAlive">
                     <span class="p-name">{{ p.nickname }}</span>
-                    <span class="p-lives">{{ p.isAlive ? ('❤️'.repeat(p.lives)) : '💀' }}</span>
+                    <span class=\"p-lives\">{{ p.isAlive ? '❤️'.repeat(p.lives) : '💀' }}</span>
                     <span class="p-score">{{ p.score }} pts</span>
                   </div>
                 }
               </div>
             </section>
 
-            <button class="btn btn-danger" (click)="finishGame()">⏹ Encerrar Jogo</button>
+            <button class="btn btn-danger" (click)="finishGame()"><i class="fas fa-stop" style="margin-right: 0.5rem"></i>Encerrar Jogo</button>
           }
         </div>
 
@@ -76,8 +76,8 @@ import { AuthService } from '../../core/auth/auth.service';
 
           @if (currentPlayer(); as player) {
             <div class="player-hud">
-              <span class="hud-nick">👤 {{ player.nickname }}</span>
-              <span class="hud-lives">{{ player.isAlive ? ('❤️'.repeat(player.lives)) : '💀 Eliminado' }}</span>
+              <span class="hud-nick"><i class="fas fa-user" style="margin-right: 0.5rem"></i>{{ player.nickname }}</span>
+              <span class=\"hud-lives\">{{ player.isAlive ? '❤️'.repeat(player.lives) : '💀 Eliminado' }}</span>
               <span class="hud-score">{{ player.score }} pts</span>
             </div>
           }
@@ -85,16 +85,16 @@ import { AuthService } from '../../core/auth/auth.service';
           @if (gameState.isGameOver()) {
 
             <section class="section">
-              <h2 class="section-title">🏆 Fim de Jogo!</h2>
+              <h2 class="section-title"><i class="fas fa-trophy" style="color: #f59e0b; margin-right: 0.5rem"></i>Fim de Jogo!</h2>
               <ng-container *ngTemplateOutlet="podiumTpl; context: { $implicit: gameState.ranking(), isGuest: true }"></ng-container>
             </section>
 
-            <button class="btn btn-leave" (click)="backToHome()">← Voltar ao início</button>
+            <button class="btn btn-leave" (click)="backToHome()"><i class="fas fa-arrow-left" style="margin-right: 0.5rem"></i>Voltar ao início</button>
 
           } @else if (currentPlayer() && !currentPlayer()!.isAlive) {
 
             <section class="eliminated-section">
-              <p class="elim-icon">💀</p>
+              <p class="elim-icon"><i class="fas fa-skull" style="color: #dc2626; font-size: 3rem"></i></p>
               <p class="elim-text">Você foi eliminado!</p>
               <p class="elim-sub">Aguarde o fim do jogo para ver o resultado.</p>
             </section>
@@ -118,7 +118,7 @@ import { AuthService } from '../../core/auth/auth.service';
               </div>
 
               @if (answered()) {
-                <p class="answered-msg">✅ Resposta enviada! Aguardando os outros...</p>
+                <p class="answered-msg"><i class="fas fa-check-circle" style="color: #10b981; margin-right: 0.5rem"></i>Resposta enviada! Aguardando os outros...</p>
               }
             </div>
 
@@ -140,7 +140,7 @@ import { AuthService } from '../../core/auth/auth.service';
           <!-- 2º lugar (esquerda) -->
           <div class="podium-slot pos-2">
             <div class="podium-nick">{{ ranking[1]?.nickname }}</div>
-            <div class="podium-avatar silver">🥈</div>
+            <div class="podium-avatar silver"><i class="fas fa-medal" style="color: #a78bfa; font-size: 2rem"></i></div>
             <div class="podium-block block-2">
               <span class="podium-pos">2º</span>
               <span class="podium-pts">{{ ranking[1]?.score }} pts</span>
@@ -149,7 +149,7 @@ import { AuthService } from '../../core/auth/auth.service';
           <!-- 1º lugar (centro) -->
           <div class="podium-slot pos-1">
             <div class="podium-nick is-winner">{{ ranking[0]?.nickname }}</div>
-            <div class="podium-avatar gold">🥇</div>
+            <div class="podium-avatar gold"><i class="fas fa-crown" style="color: #f59e0b; font-size: 2rem"></i></div>
             <div class="podium-block block-1">
               <span class="podium-pos">1º</span>
               <span class="podium-pts">{{ ranking[0]?.score }} pts</span>
@@ -159,7 +159,7 @@ import { AuthService } from '../../core/auth/auth.service';
           @if (ranking.length >= 3) {
             <div class="podium-slot pos-3">
               <div class="podium-nick">{{ ranking[2]?.nickname }}</div>
-              <div class="podium-avatar bronze">🥉</div>
+              <div class="podium-avatar bronze"><i class="fas fa-medal" style="color: #f97316; font-size: 2rem"></i></div>
               <div class="podium-block block-3">
                 <span class="podium-pos">3º</span>
                 <span class="podium-pts">{{ ranking[2]?.score }} pts</span>
@@ -183,7 +183,7 @@ import { AuthService } from '../../core/auth/auth.service';
 
       @if (ranking.length === 1) {
         <div class="solo-winner">
-          <p class="solo-crown">👑</p>
+          <p class="solo-crown"><i class="fas fa-crown" style="color: #f59e0b; font-size: 3rem"></i></p>
           <p class="solo-name">{{ ranking[0]?.nickname }}</p>
           <p class="solo-pts">{{ ranking[0]?.score }} pts</p>
         </div>

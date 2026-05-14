@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
 import { GameService } from '../../core/services/game.service';
 import { AuthService } from '../../core/auth/auth.service';
+import * as QRCode from 'qrcode';
 
 @Component({
   selector: 'app-lobby',
@@ -19,18 +20,21 @@ import { AuthService } from '../../core/auth/auth.service';
           <!-- ── HOST VIEW ── -->
           <div class="lobby-card host-card">
             <header class="card-header">
-              <span class="tag">⚡ O Jogo · Host</span>
+              <span class="tag"><i class="fas fa-bolt"></i> O Jogo · Host</span>
               <h1>{{ sessionData()?.name }}</h1>
-              <p class="difficulty-badge">
-                {{ getDifficultyLabel(sessionData()?.difficulty) }}
-              </p>
+              <p class="difficulty-badge" [innerHTML]="getDifficultyLabel(sessionData()?.difficulty)"></p>
             </header>
 
             <!-- Room code -->
             <section class="code-section" aria-label="Código da sala">
               <p class="code-label">Código para os alunos entrarem</p>
-              <div class="room-code">{{ sessionData()?.code }}</div>
-              <p class="code-hint">Compartilhe este código com os participantes</p>
+              <div class="code-display">
+                <div class="room-code">{{ sessionData()?.code }}</div>
+                @if (qrCode()) {
+                  <img [src]="qrCode()" alt="QR Code da sala" class="qr-code" />
+                }
+              </div>
+              <p class="code-hint">Compartilhe o código ou escaneie o QR code</p>
             </section>
 
             <!-- Game config -->
@@ -82,7 +86,8 @@ import { AuthService } from '../../core/auth/auth.service';
                 (click)="startGame()"
                 [disabled]="participants().length === 0 || loading()"
               >
-                {{ loading() ? 'Iniciando...' : '▶ Iniciar Jogo' }}
+                <i class="fas fa-play" *ngIf="!loading()" style="margin-right: 0.5rem"></i>
+                {{ loading() ? 'Iniciando...' : 'Iniciar Jogo' }}
               </button>
               <button class="btn btn-leave" (click)="leaveRoom()">
                 Encerrar Sala
@@ -94,15 +99,13 @@ import { AuthService } from '../../core/auth/auth.service';
           <!-- ── GUEST VIEW ── -->
           <div class="lobby-card guest-card">
             <header class="card-header">
-              <span class="tag">⚡ O Jogo</span>
+              <span class="tag"><i class="fas fa-bolt"></i> O Jogo</span>
               <h1>{{ sessionData()?.name }}</h1>
-              <p class="difficulty-badge">
-                {{ getDifficultyLabel(sessionData()?.difficulty) }}
-              </p>
+              <p class="difficulty-badge" [innerHTML]="getDifficultyLabel(sessionData()?.difficulty)"></p>
             </header>
 
             <section class="waiting-section">
-              <div class="waiting-icon">⏳</div>
+              <div class="waiting-icon"><i class="fas fa-hourglass" style="font-size: 3rem; color: #9333ea"></i></div>
               <p class="waiting-text">Aguardando o professor iniciar o jogo...</p>
             </section>
 
@@ -113,7 +116,7 @@ import { AuthService } from '../../core/auth/auth.service';
               } @else {
                 <div class="participants-grid">
                   @for (p of participants(); track p.id) {
-                    <div class="participant-chip">{{ p.nickname }} ✓</div>
+                    <div class="participant-chip">{{ p.nickname }} <i class="fas fa-check" style="color: #10b981; margin-left: 0.5rem"></i></div>
                   }
                 </div>
               }
@@ -130,7 +133,7 @@ import { AuthService } from '../../core/auth/auth.service';
       } @else if (loadError()) {
         <div class="lobby-card">
           <p class="error-msg">{{ loadError() }}</p>
-          <button class="btn btn-leave" (click)="leaveRoom()">← Voltar</button>
+          <button class="btn btn-leave" (click)="leaveRoom()"><i class="fas fa-arrow-left"></i> Voltar</button>
         </div>
       } @else {
         <div class="lobby-card">
@@ -225,6 +228,23 @@ import { AuthService } from '../../core/auth/auth.service';
       margin: 0.5rem 0 0;
       font-size: 0.85rem;
       color: #8B5CF6;
+    }
+
+    .code-display {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      border: 3px solid rgba(167, 139, 250, 0.3);
+      border-radius: 12px;
+      padding: 8px;
+      background: #fff;
     }
 
     /* Config */
@@ -388,6 +408,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
   sessionId = 0;
   sessionData = signal<any>(null);
+  qrCode = signal<string | null>(null);
   loading = signal(false);
   loadError = signal<string | null>(null);
   error = signal<string | null>(null);
@@ -402,6 +423,22 @@ export class LobbyComponent implements OnInit, OnDestroy {
       const started = this.gameState.session();
       if (started && !this.isHost() && this.sessionId) {
         void this.router.navigate(['/game', this.sessionId]);
+      }
+    });
+
+    effect(() => {
+      const code = this.sessionData()?.code;
+      if (code) {
+        console.log('Generating QR code for:', code);
+        QRCode.toDataURL(code, { width: 200, margin: 1, color: { dark: '#1E1B4B', light: '#FFFFFF' } })
+          .then((url) => {
+            console.log('QR code generated');
+            this.qrCode.set(url);
+          })
+          .catch((err) => {
+            console.error('QR code error:', err);
+            this.qrCode.set(null);
+          });
       }
     });
   }
@@ -462,9 +499,9 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
   getDifficultyLabel(difficulty: string | undefined): string {
     const labels: Record<string, string> = {
-      easy: '🟢 Fácil',
-      medium: '🟡 Médio',
-      hard: '🔴 Difícil',
+      easy: '<i class="fas fa-lightbulb" style="color: #10b981; margin-right: 0.4rem;"></i> Fácil',
+      medium: '<i class="fas fa-bolt" style="color: #f59e0b; margin-right: 0.4rem;"></i> Médio',
+      hard: '<i class="fas fa-fire" style="color: #ef4444; margin-right: 0.4rem;"></i> Difícil',
     };
     return labels[difficulty ?? ''] ?? '';
   }

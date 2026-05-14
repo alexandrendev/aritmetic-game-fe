@@ -17,8 +17,8 @@ import { AuthService } from '../../core/auth/auth.service';
       <div class="card">
 
         <header class="card-header">
-          <button class="back-link" (click)="goBack()">← Voltar</button>
-          <span class="tag">⚡ O Jogo · Convidado</span>
+          <button class="back-link" (click)="goBack()"><i class="fas fa-arrow-left"></i> Voltar</button>
+          <span class="tag"><i class="fas fa-bolt"></i> O Jogo · Convidado</span>
           <h1>Criar seu Perfil</h1>
           <p class="subtitle">Escolha um apelido e um avatar para entrar na sala</p>
         </header>
@@ -73,7 +73,8 @@ import { AuthService } from '../../core/auth/auth.service';
             (click)="onSubmit()"
             [disabled]="loading() || !nickname.trim() || !selectedAvatarId()"
           >
-            {{ loading() ? 'Entrando na sala...' : '🎮 Entrar na Sala' }}
+            <i class="fas fa-door-open" *ngIf="!loading()" style="margin-right: 0.5rem"></i>
+            {{ loading() ? 'Entrando na sala...' : 'Entrar na Sala' }}
           </button>
 
         </div>
