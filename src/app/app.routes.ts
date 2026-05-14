@@ -10,6 +10,7 @@ import { JoinGameComponent } from './features/game-session/join-game.component';
 import { GuestProfileComponent } from './features/game-session/guest-profile.component';
 import { LobbyComponent } from './features/game-session/lobby.component';
 import { GameBoardComponent } from './features/game-session/game-board.component';
+import { AdminAvatarsComponent } from './features/admin/admin-avatars.component';
 
 export const routes: Routes = [
 	{
@@ -57,6 +58,11 @@ export const routes: Routes = [
 	{
 		path: 'game/:id',
 		component: GameBoardComponent
+	},
+	{
+		path: 'admin/avatars',
+		component: AdminAvatarsComponent,
+		canActivate: [authGuard]
 	},
 	{
 		path: '**',

@@ -5,3 +5,11 @@ export interface Avatar {
   url?: string;
   thumbnailUrl?: string;
 }
+
+export interface AdminFile {
+  id: number;
+  path: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string | null;
+}

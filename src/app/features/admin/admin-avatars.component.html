@@ -1,0 +1,90 @@
+<main class="admin-page">
+  <section class="admin-card">
+
+    <header class="admin-header">
+      <div class="header-text">
+        <p class="tag"><i class="fas fa-image"></i> Administração</p>
+        <h1>Gerenciar Avatares</h1>
+        <p class="subtitle">Adicione, substitua ou remova os avatares disponíveis para os jogadores.</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="btn btn-outline" (click)="goBack()">
+          <i class="fas fa-arrow-left"></i> Voltar
+        </button>
+        <button type="button" class="btn btn-primary" [disabled]="uploading()" (click)="triggerUpload()">
+          @if (uploading()) {
+            <i class="fas fa-spinner fa-spin"></i> Enviando...
+          } @else {
+            <i class="fas fa-plus"></i> Novo Avatar
+          }
+        </button>
+      </div>
+    </header>
+
+    <input #fileInput type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" (change)="onFileSelected($event)" />
+    <input #replaceInput type="file" hidden accept="image/jpeg,image/png,image/webp,image/gif" (change)="onReplaceSelected($event)" />
+
+    @if (success()) {
+      <div class="toast toast-success">
+        <i class="fas fa-check-circle"></i> {{ success() }}
+      </div>
+    }
+
+    @if (error()) {
+      <div class="toast toast-error">
+        <span><i class="fas fa-exclamation-circle"></i> {{ error() }}</span>
+        <button class="toast-close" (click)="clearError()"><i class="fas fa-times"></i></button>
+      </div>
+    }
+
+    @if (loading()) {
+      <div class="loading-state">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Carregando avatares...</p>
+      </div>
+    } @else if (avatars().length === 0) {
+      <div class="empty-state">
+        <i class="fas fa-image"></i>
+        <p>Nenhum avatar cadastrado ainda.</p>
+        <button type="button" class="btn btn-primary" (click)="triggerUpload()">
+          <i class="fas fa-plus"></i> Adicionar primeiro avatar
+        </button>
+      </div>
+    } @else {
+      <div class="avatars-grid">
+        @for (avatar of avatars(); track avatar.id) {
+          <div class="avatar-card" [class.is-busy]="deletingId() === avatar.id || replacingId() === avatar.id">
+            <div class="avatar-img-wrap">
+              <img [src]="avatar.url" [alt]="'Avatar #' + avatar.id" loading="lazy" />
+
+              @if (confirmDeleteId() === avatar.id) {
+                <div class="confirm-overlay">
+                  <p>Excluir este avatar?</p>
+                  <div class="confirm-actions">
+                    <button class="btn-confirm-yes" (click)="executeDelete(avatar.id)">Sim</button>
+                    <button class="btn-confirm-no" (click)="cancelDelete()">Não</button>
+                  </div>
+                </div>
+              } @else if (deletingId() === avatar.id) {
+                <div class="busy-overlay">
+                  <i class="fas fa-spinner fa-spin"></i>
+                </div>
+              } @else {
+                <div class="avatar-overlay">
+                  <button class="btn-icon" title="Substituir imagem" (click)="triggerReplace(avatar.id)">
+                    <i class="fas fa-upload"></i>
+                  </button>
+                  <button class="btn-icon btn-icon-danger" title="Excluir avatar" (click)="confirmDelete(avatar.id)">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              }
+            </div>
+            <p class="avatar-id">#{{ avatar.id }}</p>
+          </div>
+        }
+      </div>
+    }
+
+  </section>
+</main>
