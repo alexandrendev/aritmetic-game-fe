@@ -247,6 +247,8 @@ import { environment } from '../../../environments/environment';
       border-radius: 12px;
       padding: 8px;
       background: #fff;
+    }
+
     .qr-img {
       display: block;
       margin: 1rem auto 0;
@@ -438,10 +440,9 @@ export class LobbyComponent implements OnInit, OnDestroy {
     effect(() => {
       const code = this.sessionData()?.code;
       if (code) {
-        console.log('Generating QR code for:', code);
-        QRCode.toDataURL(code, { width: 200, margin: 1, color: { dark: '#1E1B4B', light: '#FFFFFF' } })
+        const joinUrl = `${environment.appUrl}/join-game/${code}`;
+        QRCode.toDataURL(joinUrl, { width: 200, margin: 1, color: { dark: '#1E1B4B', light: '#FFFFFF' } })
           .then((url) => {
-            console.log('QR code generated');
             this.qrCode.set(url);
           })
           .catch((err) => {
