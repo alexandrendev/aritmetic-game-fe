@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { GameService } from '../../core/services/game.service';
 
 @Component({
@@ -151,13 +151,22 @@ import { GameService } from '../../core/services/game.service';
     }
   `]
 })
-export class JoinGameComponent {
+export class JoinGameComponent implements OnInit {
   private gameService = inject(GameService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   sessionCode = '';
   loading = signal(false);
   error = signal<string | null>(null);
+
+  ngOnInit() {
+    const code = this.route.snapshot.paramMap.get('code');
+    if (code) {
+      this.sessionCode = code.toUpperCase();
+      this.onSubmit();
+    }
+  }
 
   onSubmit() {
     if (!this.sessionCode.trim()) {

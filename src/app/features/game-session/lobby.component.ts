@@ -6,6 +6,8 @@ import { GameStateService } from '../../core/services/game-state.service';
 import { GameService } from '../../core/services/game.service';
 import { AuthService } from '../../core/auth/auth.service';
 import * as QRCode from 'qrcode';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'app-lobby',
@@ -245,6 +247,12 @@ import * as QRCode from 'qrcode';
       border-radius: 12px;
       padding: 8px;
       background: #fff;
+    .qr-img {
+      display: block;
+      margin: 1rem auto 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
     }
 
     /* Config */
@@ -412,6 +420,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   loading = signal(false);
   loadError = signal<string | null>(null);
   error = signal<string | null>(null);
+  qrCodeUrl = signal<string | null>(null);
 
   totalRounds = 5;
   responseWindowMs = 30000;

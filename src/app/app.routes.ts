@@ -43,6 +43,10 @@ export const routes: Routes = [
 		canActivate: [authGuard]
 	},
 	{
+		path: 'join-game/:code',
+		component: JoinGameComponent
+	},
+	{
 		path: 'guest-profile',
 		component: GuestProfileComponent
 	},
