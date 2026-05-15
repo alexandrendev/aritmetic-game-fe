@@ -72,6 +72,28 @@ Você pode compartilhar de **duas formas**:
 - Alunos escanear com a câmera ou leitor de QR code
 - Abre automaticamente no navegador
 
+### Gerenciando suas Salas
+
+No Dashboard você tem acesso ao **histórico completo** das suas salas:
+
+**Salas Ativas** (status `aguardando` ou `em jogo`):
+- Veja quantos participantes estão na sala
+- Botão **"Abrir"** para voltar ao lobby da sala
+- Botão **"Encerrar"** para fechar a sala imediatamente
+
+**Histórico** (salas finalizadas):
+- Ranking dos 3 primeiros colocados
+- Data e hora da partida
+
+> **Importante**: Só é permitida uma sala ativa por vez. Se tentar criar uma nova sala enquanto já tiver uma ativa, você será redirecionado para a sala existente.
+
+### Expulsando um Participante
+
+No Lobby, ao lado do nome de cada participante, há um botão **"x"** (expulsar):
+- Clique para remover o aluno da sala
+- O aluno receberá uma tela de aviso informando que foi expulso
+- A ação funciona tanto no lobby quanto durante o jogo
+
 ### Iniciando o Jogo
 
 1. **Aguarde todos os alunos entrarem**
@@ -204,16 +226,20 @@ Você verá:
 
 ### Como você marca pontos?
 
-**Resposta Correta + Tempo Restante = Pontos**
+**Resposta Correta + Velocidade = Pontos**
 
 ```
-Pontos = 100 + (Segundos Restantes × 2)
+Pontos = 100 × (0.5 + 0.5 × bônus_de_tempo)
+bônus_de_tempo = (tempo_total − tempo_usado) ÷ tempo_total
 ```
 
-#### Exemplos:
-- Responder corretamente em **5 segundos**: 100 + (55 × 2) = **210 pontos**
-- Responder corretamente em **30 segundos**: 100 + (30 × 2) = **160 pontos**
-- Responder corretamente em **59 segundos**: 100 + (1 × 2) = **102 pontos**
+O máximo possível é **100 pontos** (resposta imediata); o mínimo para uma resposta correta é **50 pontos** (no limite do tempo).
+
+#### Exemplos (janela de 30 segundos):
+- Responder corretamente em **3 s** (tempo_usado = 3000 ms): ~**95 pontos**
+- Responder corretamente em **15 s** (metade do tempo): **75 pontos**
+- Responder corretamente em **29 s** (quase no limite): ~**52 pontos**
+- Responder incorretamente / timeout: **0 pontos** e −1 vida
 
 ### Ranking
 
@@ -254,6 +280,9 @@ R: Se sua conexão cair, você será desconectado. Pode tentar reconectar, mas p
 
 ### Para Professores
 
+**P: Posso ter duas salas ativas ao mesmo tempo?**
+R: Não. O sistema permite apenas uma sala ativa (aguardando ou em jogo) por professor. Se tentar criar uma segunda sala, você será redirecionado para a sala existente. Encerre a sala atual no Dashboard antes de criar uma nova.
+
 **P: Posso mudar o nome da sala depois de criar?**
 R: Não durante a sessão. Crie uma nova sala com o nome correto.
 
@@ -272,6 +301,9 @@ R: Clique em "Encerrar Sala" no lobby. Todos os participantes serão desconectad
 
 **P: O que acontece se ficar sem vidas?**
 R: Você é eliminado, aparecendo em cinza no ranking, mas pode continuar assistindo o jogo.
+
+**P: O que acontece se eu for expulso pelo professor?**
+R: Você verá uma tela informando que foi removido da sala. Não será possível continuar na sessão atual; aguarde o professor criar uma nova sala.
 
 **P: Posso jogar novamente?**
 R: Sim! Peça ao professor para criar uma nova sala ou para recomeçar.

@@ -58,4 +58,23 @@ export class GameSessionService {
       headers: this.jsonHeaders
     });
   }
+
+  finish(sessionId: string, reason = 'manual'): Observable<unknown> {
+    return this.http.post<unknown>(`${this.apiBaseUrl}/api/game-sessions/${sessionId}/finish`, { reason }, {
+      headers: this.jsonHeaders
+    });
+  }
+
+  delete(sessionId: string): Observable<unknown> {
+    return this.http.delete<unknown>(`${this.apiBaseUrl}/api/game-sessions/${sessionId}`, {
+      headers: this.jsonHeaders
+    });
+  }
+
+  kickGuest(sessionId: string | number, participantId: string | number): Observable<unknown> {
+    return this.http.delete<unknown>(
+      `${this.apiBaseUrl}/api/game-sessions/${sessionId}/guests/${participantId}`,
+      { headers: this.jsonHeaders }
+    );
+  }
 }

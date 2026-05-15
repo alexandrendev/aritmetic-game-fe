@@ -21,13 +21,125 @@
         </div>
       </div>
 
-      <button type="button" class="btn btn-create" (click)="createGame()">
+      @if (hasActiveSession()) {
+        <div class="active-warning">
+          <i class="fas fa-exclamation-triangle"></i>
+          Você já tem uma sala ativa. Encerre-a antes de criar uma nova.
+        </div>
+      }
+
+      <button
+        type="button"
+        class="btn btn-create"
+        [class.btn-disabled]="hasActiveSession()"
+        [disabled]="hasActiveSession()"
+        (click)="createGame()"
+      >
         <i class="fas fa-plus" style="margin-right: 0.5rem"></i>
         Criar Nova Sala
       </button>
+
+      <div class="sessions-section">
+        <p class="section-title">Suas salas</p>
+
+        @if (sessionsLoading()) {
+          <p class="loading-text">Carregando salas...</p>
+        } @else if (sessions().length === 0) {
+          <p class="empty-text">Nenhuma sala criada ainda.</p>
+        } @else {
+
+          @if (activeSessions().length > 0) {
+            <div class="sessions-group">
+              <p class="group-label">Em andamento</p>
+              @for (session of activeSessions(); track session.id) {
+                <div class="session-card session-card--active">
+                  <div class="session-card-top">
+                    <div class="session-info">
+                      <span class="status-badge" [class]="'status-' + session.status">
+                        {{ getStatusLabel(session.status) }}
+                      </span>
+                      <span class="difficulty-badge">{{ getDifficultyLabel(session.difficulty) }}</span>
+                    </div>
+                    <span class="session-date">{{ formatDate(session.createdAt) }}</span>
+                  </div>
+
+                  <p class="session-name">{{ session.name }}</p>
+
+                  <div class="session-meta">
+                    <span><i class="fas fa-users"></i> {{ session.participantsCount ?? 0 }} participante{{ (session.participantsCount ?? 0) !== 1 ? 's' : '' }}</span>
+                    <span class="session-code"><i class="fas fa-key"></i> {{ session.code }}</span>
+                  </div>
+
+                  <div class="session-actions">
+                    <button type="button" class="btn-action btn-open" (click)="openSession(session)">
+                      <i class="fas fa-door-open"></i> Abrir
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-action btn-close"
+                      [disabled]="closingId() === session.id"
+                      (click)="closeSession(session)"
+                    >
+                      <i class="fas fa-stop-circle"></i>
+                      {{ closingId() === session.id ? 'Encerrando...' : 'Encerrar' }}
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+          @if (finishedSessions().length > 0) {
+            <div class="sessions-group">
+              <p class="group-label">Histórico</p>
+              @for (session of finishedSessions(); track session.id) {
+                <div class="session-card session-card--finished">
+                  <div class="session-card-top">
+                    <div class="session-info">
+                      <span class="status-badge status-finished">Encerrada</span>
+                      <span class="difficulty-badge">{{ getDifficultyLabel(session.difficulty) }}</span>
+                    </div>
+                    <span class="session-date">{{ formatDate(session.createdAt) }}</span>
+                  </div>
+
+                  <p class="session-name">{{ session.name }}</p>
+
+                  <div class="session-meta">
+                    <span><i class="fas fa-users"></i> {{ session.participantsCount ?? 0 }} participante{{ (session.participantsCount ?? 0) !== 1 ? 's' : '' }}</span>
+                  </div>
+
+                  @if (getTopRanking(session).length > 0) {
+                    <div class="ranking-mini">
+                      @for (entry of getTopRanking(session); track entry.nickname; let i = $index) {
+                        <div class="ranking-row">
+                          <span class="rank-pos">{{ i + 1 }}º</span>
+                          <span class="rank-name">{{ entry.nickname }}</span>
+                          <span class="rank-score">{{ entry.score }} pts</span>
+                        </div>
+                      }
+                    </div>
+                  }
+
+                  <div class="session-actions">
+                    <button
+                      type="button"
+                      class="btn-action btn-delete"
+                      [disabled]="deletingId() === session.id"
+                      (click)="deleteSession(session)"
+                    >
+                      <i class="fas fa-trash"></i>
+                      {{ deletingId() === session.id ? 'Excluindo...' : 'Excluir' }}
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+
+        }
+      </div>
     }
 
     <button type="button" class="btn btn-logout" (click)="logout()">Sair da conta</button>
-
   </section>
 </main>

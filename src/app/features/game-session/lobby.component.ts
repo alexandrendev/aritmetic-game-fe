@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GameStateService } from '../../core/services/game-state.service';
 import { GameService } from '../../core/services/game.service';
+import { GameSessionService } from './game-session.service';
 import { AuthService } from '../../core/auth/auth.service';
 import * as QRCode from 'qrcode';
 import { environment } from '../../../environments/environment';
@@ -72,7 +73,18 @@ import { environment } from '../../../environments/environment';
               } @else {
                 <div class="participants-grid">
                   @for (p of participants(); track p.id) {
-                    <div class="participant-chip">{{ p.nickname }}</div>
+                    <div class="participant-chip">
+                      <span class="chip-name">{{ p.nickname }}</span>
+                      <button
+                        type="button"
+                        class="kick-btn"
+                        title="Expulsar {{ p.nickname }}"
+                        [disabled]="kickingId() === p.id"
+                        (click)="kickParticipant(p.id)"
+                      >
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
                   }
                 </div>
               }
@@ -106,29 +118,41 @@ import { environment } from '../../../environments/environment';
               <p class="difficulty-badge" [innerHTML]="getDifficultyLabel(sessionData()?.difficulty)"></p>
             </header>
 
-            <section class="waiting-section">
-              <div class="waiting-icon"><i class="fas fa-hourglass" style="font-size: 3rem; color: #9333ea"></i></div>
-              <p class="waiting-text">Aguardando o professor iniciar o jogo...</p>
-            </section>
+            @if (wasKicked()) {
+              <section class="kicked-section">
+                <div class="kicked-icon"><i class="fas fa-door-closed"></i></div>
+                <p class="kicked-title">Você foi removido da sala</p>
+                <p class="kicked-sub">O professor te removeu desta partida.</p>
+                <button class="btn btn-leave" (click)="leaveRoom()">← Voltar ao início</button>
+              </section>
+            } @else {
+              <section class="waiting-section">
+                <div class="waiting-icon"><i class="fas fa-hourglass" style="font-size: 3rem; color: #9333ea"></i></div>
+                <p class="waiting-text">Aguardando o professor iniciar o jogo...</p>
+              </section>
 
-            <section class="participants-section">
-              <h2 class="section-title">Na sala agora <span class="count">{{ participants().length }}</span></h2>
-              @if (participants().length === 0) {
-                <p class="empty-state">Você é o primeiro! Aguardando mais participantes...</p>
-              } @else {
-                <div class="participants-grid">
-                  @for (p of participants(); track p.id) {
-                    <div class="participant-chip">{{ p.nickname }} <i class="fas fa-check" style="color: #10b981; margin-left: 0.5rem"></i></div>
-                  }
-                </div>
-              }
-            </section>
+              <section class="participants-section">
+                <h2 class="section-title">Na sala agora <span class="count">{{ participants().length }}</span></h2>
+                @if (participants().length === 0) {
+                  <p class="empty-state">Você é o primeiro! Aguardando mais participantes...</p>
+                } @else {
+                  <div class="participants-grid">
+                    @for (p of participants(); track p.id) {
+                      <div class="participant-chip">
+                        <span class="chip-name">{{ p.nickname }}</span>
+                        <i class="fas fa-check" style="color: #10b981"></i>
+                      </div>
+                    }
+                  </div>
+                }
+              </section>
 
-            <div class="actions">
-              <button class="btn btn-leave" (click)="leaveRoom()">
-                ← Sair da Sala
-              </button>
-            </div>
+              <div class="actions">
+                <button class="btn btn-leave" (click)="leaveRoom()">
+                  ← Sair da Sala
+                </button>
+              </div>
+            }
           </div>
         }
 
@@ -331,8 +355,60 @@ import { environment } from '../../../environments/environment';
       color: #4C1D95;
       font-weight: 600;
       font-size: 0.9rem;
-      padding: 0.4rem 0.85rem;
+      padding: 0.4rem 0.5rem 0.4rem 0.85rem;
       border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .chip-name { flex: 1; }
+
+    .kick-btn {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border: none;
+      background: rgba(220, 38, 38, 0.1);
+      color: #DC2626;
+      border-radius: 50%;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 0.7rem;
+      transition: background 0.15s;
+      padding: 0;
+    }
+
+    .kick-btn:hover:not(:disabled) { background: rgba(220, 38, 38, 0.2); }
+    .kick-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Kicked state */
+    .kicked-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 1.5rem 0;
+      text-align: center;
+    }
+
+    .kicked-icon {
+      font-size: 3rem;
+      color: #DC2626;
+    }
+
+    .kicked-title {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1E1B4B;
+    }
+
+    .kicked-sub {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #6B7280;
     }
 
     /* Waiting */
@@ -412,6 +488,7 @@ import { environment } from '../../../environments/environment';
 export class LobbyComponent implements OnInit, OnDestroy {
   public gameState = inject(GameStateService);
   private gameService = inject(GameService);
+  private sessionService = inject(GameSessionService);
   private authService = inject(AuthService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -423,6 +500,8 @@ export class LobbyComponent implements OnInit, OnDestroy {
   loadError = signal<string | null>(null);
   error = signal<string | null>(null);
   qrCodeUrl = signal<string | null>(null);
+  kickingId = signal<number | null>(null);
+  wasKicked = signal(false);
 
   totalRounds = 5;
   responseWindowMs = 30000;
@@ -434,6 +513,19 @@ export class LobbyComponent implements OnInit, OnDestroy {
       const started = this.gameState.session();
       if (started && !this.isHost() && this.sessionId) {
         void this.router.navigate(['/game', this.sessionId]);
+      }
+    });
+
+    effect(() => {
+      const kickedId = this.gameState.lastKickedParticipantId();
+      if (!kickedId) return;
+      if (this.isHost()) {
+        this.kickingId.set(null);
+        return;
+      }
+      const myId = parseInt(localStorage.getItem('guest-session-id') ?? '0', 10);
+      if (myId && kickedId === myId) {
+        this.wasKicked.set(true);
       }
     });
 
@@ -496,6 +588,14 @@ export class LobbyComponent implements OnInit, OnDestroy {
         this.loading.set(false);
       },
     });
+  }
+
+  kickParticipant(participantId: number): void {
+    if (this.kickingId()) return;
+    this.kickingId.set(participantId);
+    this.sessionService
+      .kickGuest(this.sessionId, participantId)
+      .subscribe({ error: () => this.kickingId.set(null) });
   }
 
   leaveRoom(): void {
