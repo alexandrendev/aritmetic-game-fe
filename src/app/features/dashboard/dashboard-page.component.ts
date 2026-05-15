@@ -36,6 +36,10 @@ export class DashboardPageComponent {
     void this.router.navigate(['/create-game']);
   }
 
+  goToAdminAvatars(): void {
+    void this.router.navigate(['/admin/avatars']);
+  }
+
   logout(): void {
     this.authService.logout();
     void this.router.navigate(['/login']);
