@@ -16,6 +16,7 @@ export class GameStateService {
   public participants = signal<any[]>([]);
   public ranking = signal<any[]>([]);
   public isGameOver = signal<boolean>(false);
+  public lastKickedParticipantId = signal<number | null>(null);
 
   /**
    * Conecta no canal privado da sessão e mapeia os eventos para os Signals
@@ -25,6 +26,7 @@ export class GameStateService {
       this.session.set(null);
       this.participants.set([]);
       this.isGameOver.set(false);
+      this.lastKickedParticipantId.set(null);
     }
 
     const channel = this.pusherService.subscribeToChannel(`private-game-session-${sessionId}`);
@@ -52,6 +54,7 @@ export class GameStateService {
     // Atualização de Participante (Respostas, perda de vidas, etc)
     channel.bind('game.participant.updated', (data: any) => this.upsertParticipant(data.participant));
     channel.bind('game.participant.eliminated', (data: any) => this.upsertParticipant(data.participant));
+    channel.bind('game.participant.kicked', (data: any) => this.removeParticipant(data.participant));
 
     // Rodada Finalizada (Timeout ou todos responderam)
     channel.bind('game.round.finished', (data: any) => {
@@ -85,5 +88,10 @@ export class GameStateService {
       }
       return [...list, participant];
     });
+  }
+
+  private removeParticipant(participant: any) {
+    this.lastKickedParticipantId.set(participant.id);
+    this.participants.update(list => list.filter(p => p.id !== participant.id));
   }
 }

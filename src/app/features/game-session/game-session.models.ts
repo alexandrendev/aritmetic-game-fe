@@ -21,12 +21,43 @@ export interface AnswerPayload {
   timeMs: number;
 }
 
+export interface SessionRanking {
+  position: number;
+  id: number;
+  guestId: number;
+  nickname: string;
+  score: number;
+  lives: number;
+  isAlive: boolean;
+}
+
+export interface SessionParticipant {
+  id: number;
+  nickname: string;
+  score: number;
+  lives: number;
+  isAlive: boolean;
+}
+
+export interface GameSessionState {
+  round?: number;
+  totalRounds?: number;
+  startedAt?: string;
+  finishedAt?: string;
+  finishReason?: string;
+  ranking?: SessionRanking[];
+}
+
 export interface GameSession {
   id: string;
   name?: string;
   code?: string;
-  status?: string;
+  status?: 'waiting' | 'ready' | 'playing' | 'finished' | string;
   difficulty?: Difficulty;
+  createdAt?: string;
+  participantsCount?: number;
+  participants?: SessionParticipant[];
+  state?: GameSessionState;
   [key: string]: unknown;
 }
 

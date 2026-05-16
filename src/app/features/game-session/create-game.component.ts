@@ -268,7 +268,11 @@ export class CreateGameComponent {
       difficulty: this.difficulty,
     }).subscribe({
       next: (response) => void this.router.navigate(['/lobby', response.id]),
-      error: () => {
+      error: (err) => {
+        if (err?.status === 409 && err?.error?.activeSession?.id) {
+          void this.router.navigate(['/lobby', err.error.activeSession.id]);
+          return;
+        }
         this.error.set('Erro ao criar sala. Tente novamente.');
         this.loading.set(false);
       },
